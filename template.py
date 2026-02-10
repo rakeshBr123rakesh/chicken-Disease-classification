@@ -23,7 +23,8 @@ list_of_files=[
     "params.yaml",
     "requirements.txt",
     "setup.py",
-    "research/tarils.ipynb"
+    "research/tarils.ipynb",
+    "templates/index.html"
 
      
 ]
