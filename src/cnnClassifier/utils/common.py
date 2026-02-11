@@ -1,14 +1,39 @@
 import os
-import box.exception import BoxValueError
+from box.exceptions import BoxValueError
 import yaml
 from cnnClassifier import logger
 import json
 import joblib
-from ensure import ensure_annotations
-from box import Configbox
+from box import ConfigBox
 from pathlib import Path
 from typing import Any
 import base64
+
+
+
+
+
+from functools import wraps
+from inspect import signature
+
+def ensure_annotations(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        sig = signature(func)
+        bound = sig.bind(*args, **kwargs)
+        bound.apply_defaults()
+
+        for name, value in bound.arguments.items():
+            expected_type = func.__annotations__.get(name)
+            if expected_type and not isinstance(value, expected_type):
+                raise TypeError(
+                    f"Argument '{name}' must be {expected_type}, "
+                    f"but got {type(value)}"
+                )
+
+        return func(*args, **kwargs)
+    return wrapper
+
 
 
 @ensure_annotations
